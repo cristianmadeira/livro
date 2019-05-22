@@ -50,7 +50,7 @@ return [
             'port' => env('3306', '3306'),
             'database' => env('library', 'library'),
             'username' => env('root', 'root'),
-            'password' => env('Cristian1106@', 'Cristian1106@'),
+            'password' => env('', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
