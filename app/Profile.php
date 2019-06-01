@@ -1,16 +1,12 @@
 <?php
 
 namespace Laravel;
-
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-class Profile extends Authenticatable
+class Profile extends Model
 {
-    use Notifiable;
-    public $guard="profile";
+
     public $table="profiles";
+    protected $guarded=array("_token");
     //
     public function user(){
       return $this->belongsTo(User::class);

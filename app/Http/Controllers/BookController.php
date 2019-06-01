@@ -139,27 +139,48 @@ class BookController extends Controller
       return view("books.mybooks")->with("books",$books);
   }
     public function setBookReadedOrDesired(Request $request, Book $book){
+        //return response()->json($request);
+
+        //return response()->json(isset($request->readed));
+        $desired=isset($request->desired)?1:0;
+        $readed=isset($request->readed)?1:0;
+
         $user=Auth::user();
+
         $books=$user->books()->wherePivot("user_id","=",$user->id)->wherePivot("book_id","=",$book->id)->get();
         $data=[];
         $message="";
+
         //return response()->json(["readed"=>$books[0]->pivot->readed == $request->get("readed")]);
-        if($books[0]->pivot->readed  && $books[0]->pivot->desired){
-            return redirect("books")->withErrors("Livro já lido e desejado!");
-        }else{
-            if($request->get("desired") != 0){
-                $message="Livro marcado como desejável com sucesso!";
-                $data=array("desired"=>$request->get("desired"));
-            }
-
-
-            if($request->get("readed") != 0 ){
-                $message="Livro marcado como lido com sucesso!";
-                $data=array("readed"=>$request->get("readed"));
-            }
-
-            $user->books()->sync([$book->id =>$data]);
-            return redirect("books")->with(["error"=>false,"message"=>$message]);
+        //return response()->json($books[0]->pivot->id);
+        //Verficado o status do livro.
+        if(empty($books[0])){
+            $data=array("desired"=>$desired,"readed"=>$readed);
+            $message="Livro adicionado com sucesso!";
+            $user->books()->attach($book->id, $data);
         }
+        else{
+            if($books[0]->pivot->readed  && $books[0]->pivot->desired){
+                return redirect("books")->withErrors("Livro já lido e desejado!");
+            }else{
+
+                if(isset($request->desired)){
+                    $message="Livro marcado como desejável com sucesso!";
+                    $data=array("desired"=>$desired);
+                }
+
+
+                if(isset($request->readed)){
+                    $message="Livro marcado como lido com sucesso!";
+                    $data=array("readed"=>$readed);
+                }
+
+            }
+
+            //Atualiado todos os itens ou cria caso não aja.
+            $user->books()->sync([$book->id =>$data]);
+        }
+
+        return redirect("books")->with(["error"=>false,"message"=>$message]);
     }
 }

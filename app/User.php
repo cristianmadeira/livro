@@ -18,7 +18,7 @@ class User extends Authenticatable
       return $this->hasMany(Profile::class);
     }
     public function books(){
-      return $this->belongsToMany(Book::class,"users_books","user_id","book_id")->withPivot("readed","desired");
+      return $this->belongsToMany(Book::class,"users_books")->withPivot("readed","desired","id");
     }
     /**
      * The attributes that are mass assignable.

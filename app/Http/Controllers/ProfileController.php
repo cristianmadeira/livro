@@ -90,6 +90,12 @@ class ProfileController extends Controller
     public function update(Request $request, Profile $profile)
     {
         //
+        $profile->type=$request->profile;
+        $profile->save();
+        $error=false;
+        $message="O Perifl atualizado com sucesso!!!";
+
+      return redirect()->action("LoginController@logout")->with("request",Auth::user());
     }
 
     /**
