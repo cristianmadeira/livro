@@ -16,6 +16,7 @@ Auth::routes();
 Route::group(array("middleware"=>"auth"),function(){
   Route::get("/books/mybooks","BookController@myBooks")->name("books.mybooks.index");
   Route::post("/books/mybooks/{book}","BookController@setBookReadedOrDesired")->name("books.mybooks.create");
+  Route::delete("/books/mybooks/{id}","BookController@destroyMyBooks")->name("books.mybooks.destroy");
   Route::get('/home', 'HomeController@index')->name('home');
   Route::resource("/books","BookController");
   Route::resource("users","UserController");

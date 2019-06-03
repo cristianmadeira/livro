@@ -44,20 +44,7 @@
             <input type="text" name="cell_phone" class="form form-control" value="{{old ('cell_phone',$user->contact->cell_phone ?? '')}}"/>
         </div>
     </div>
-    <div class="row">
-        <div class="input-field col s12">
-
-            <select class="form-control"  name="profile" id="profile" class="@error('profile') invalid @enderror ">
-                <option value="" disabled selected>Escolha um perfil</option>
-                <option value='admin'>Admin</option>
-                <option value='usuario'>Usuário</option>
-            </select>
-            <label for="profile" >
-            {{ _('Profile')}}
-            </label>
-        </div>
-
-    </div>
+    
 
     <div class="row">
         <div class="input-field col s6">

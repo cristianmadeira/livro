@@ -40,7 +40,7 @@ class UserController extends Controller
      */
     public function store(UsersRequest $request)
     {
-      return response()->json($request);
+
         User::create(
           array(
             "name"=>$request->name,
@@ -106,11 +106,11 @@ class UserController extends Controller
         $contact->phone=$request->phone;
         $contact->user_id=$user->id;
 
-        $profile =$user->profiles()->find($user->id);
-        $profile->type=$request->profile;
-        $profile->user_id=$user->id;
+        //$profile =$user->profiles()->find($user->id);
+        //$profile->type=$request->profile;
+        //$profile->user_id=$user->id;
 
-        $user->profiles()->save($profile);
+        //$user->profiles()->save($profile);
         $user->contact()->save($contact);
         $user->save();
         return redirect("users")->with(["error"=>false,"message"=>"Usuário atualizado com sucesso!"]);

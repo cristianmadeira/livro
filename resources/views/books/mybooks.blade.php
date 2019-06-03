@@ -2,18 +2,21 @@
 @section("title","Livros")
 
 @section("content")
-  <script type="text/javascript">
-      function submitMethodDelete(){
-        //Cancela o evento padrão(get)
-        event.preventDefault();
-        document.getElementById("form-books").submit();
-      }
-  </script>
-  @if(!empty(session('message')))
-    <div class="{{session('error')? 'alert alert-danger' : 'alert alert-success'}}">
-        {{session('message')}}
-    </div>
-  @endif
+
+    @if($errors->any())
+      <div class="card-panel">
+          <ul>
+              @foreach($errors->all() as $error)
+                  <li><span class="red-text text-darken-4">{{ __($error)}}</span></li>
+              @endforeach
+          </ul>
+      </div>
+    @endif
+    @if(!empty(session('message')))
+      <div class="card-panel">
+          <span class="green-text text-green-4">{{session('message')}}</span>
+      </div>
+    @endif
   <table class="responsive-table bordered  highlight">
     <thead>
       <tr>
@@ -27,33 +30,38 @@
     </thead>
     <tbody>
       @forelse($books as $book)
-        <tr class="{{$book->pivot->readed ? 'success' :''}}">
+        <tr>
           <td>{{$book->author}}</td>
           <td>{{$book->title}}</td>
           <td>{{$book->isbn}}</td>
-          <td>{{ Form::checkbox("readed",1,$book->pivot->readed,array("disabled")) }}</td>
-          <td >{{ Form::checkbox("desired",1,$book->pivot->desired,array("disabled")) }}</td>
+            <td>
+
+                <input name="readed"  id="{{'readed'.$book->id}}" type="checkbox" disabled  {{ ($book->pivot->readed?'checked':'')}} class="filled-in" />
+                <label for="{{'readed'.$book->id}}" class="form-check-label">Lido</label>
+
+            </td>
+            <td>
+                <input name="desired" id="{{'deserided'.$book->id}}" disabled type="checkbox" {{ ($book->pivot->desired?'checked':'')}} class="filled-in" />
+                <label for="{{'deserided'.$book->id}}" class="form-check-label">Desejado</label>
+
+            </td>
+
           <td>
-            <a href="{{ route('books.show',$book->id) }}">
-              <span class="glyphicon glyphicon-search"></span>
-            </a>&nbsp;&nbsp;&nbsp;
-            <a href="{{ route ('books.edit',$book) }}">
-              <span class="glyphicon glyphicon-edit"></span>
-            </a>&nbsp;&nbsp;&nbsp;
+
             <a href="{{route('books.destroy',$book->id)}}">
-              <span class="glyphicon glyphicon-trash" onclick="submitMethodDelete();"></span>
+              <i class="material-icons" onclick="submitMethodDelete();">delete</i>
             </a>
             <form id="form-books" method="POST"
-            action="{{ route ('books.destroy',$book->id)}}">
+            action="{{ route ('books.mybooks.destroy',$book->id)}}">
                 @method("DELETE")
                 @csrf()
             </form>
           </td>
         </tr>
       @empty
-        <div class="alert alert-danger">
-            <span>Nenhum livro lido ou desejado!</span>
-        </div>
+          <div class="card-panel">
+              <span class="red-text text-darken-4">Nenhum livro Lido ou desejado!</span>
+          </div>
       @endforelse
     </tbody>
     <tfoot>
@@ -68,4 +76,14 @@
     </tfoot>
   </table>
 
+    @section("footerScripts")
+        @parent
+          <script type="text/javascript">
+              function submitMethodDelete(){
+                //Cancela o evento padrão(get)
+                event.preventDefault();
+                document.getElementById("form-books").submit();
+              }
+          </script>
+      @endsection
 @stop

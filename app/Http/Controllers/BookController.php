@@ -135,7 +135,7 @@ class BookController extends Controller
       //return response()->json($books);
       $user=Auth::user();
       $books=$user->books()->wherePivot("user_id","=",$user->id)->get();
-
+      //return response()->json($books);
       return view("books.mybooks")->with("books",$books);
   }
     public function setBookReadedOrDesired(Request $request, Book $book){
@@ -182,5 +182,11 @@ class BookController extends Controller
         }
 
         return redirect("books")->with(["error"=>false,"message"=>$message]);
+    }
+    public function destroyMyBooks(Request $request,$id){
+        $user=Auth::user();
+        $user->books()->detach($id);
+        return redirect("books/mybooks")->with(["error"=>false,"message"=>"Livro desanexado com sucesso!"]);
+
     }
 }

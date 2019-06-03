@@ -1,18 +1,34 @@
 @extends("layouts.app")
 @section("title","Usuários")
 @section("content")
-  <script type="text/javascript">
-    function submitMethodDelete(){
-      event.preventDefault();
-      document.getElementById("users-form").submit();
-    }
-  </script>
-  @if(session('message'))
-    <div class="{{ session('error') ? 'alert alert-danger' : 'alert alert-success'}}">
-      <span>{{session('message')}}</span>
+
+    <!--Book Modal Structure-->
+    <div class="modal" id="users-modal">
+        <div class="modal-content">
+
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">
+                <i class="small material-icons">check</i>OK
+            </a>
+        </div>
     </div>
-  @endif
-  <table class="responsive-table bordered  highlight">
+
+    @if($errors->any())
+    <div class="card-panel">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li><span class="red-text text-darken-4">{{ __($error)}}</span></li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+    @if(!empty(session('message')))
+    <div class="card-panel">
+        <span class="green-text text-green-4">{{session('message')}}</span>
+    </div>
+    @endif
+    <table class="responsive-table bordered  highlight">
 
     <thead>
       <tr>
@@ -36,27 +52,28 @@
         <td>{{$user->created_at}}</td>
         <td>{{$user->updated_at}}</td>
         <td>
-          <a href="{{ route('users.show',$user)}}">
-            <span class="glyphicon glyphicon-search"></span>
-          </a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="{{ route ('users.edit',$user) }}">
-            <span class="glyphicon glyphicon-edit"></span>
-          </a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="#" onclick="submitMethodDelete()">
-            <span class="glyphicon glyphicon-trash"></span>
-          </a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <form id="users-form" action="{{ route ('users.destroy',$user) }} " method="post" >
-              @csrf()
-              @method("DELETE")
-
-          </form>
+            <div class="row">
+                <a class="waves-effect waves-light  modal-trigger" href="#users-modal" onclick="showModal({{$user}});">
+                    <i  class="small material-icons">search</i>
+                </a>
+                <a href="{{ route ('users.edit',$user) }}">
+                    <i  class="small material-icons">edit</i>
+                </a>
+                <a href="#" onclick="submitMethodDelete()">
+                    <i  class="small material-icons">delete</i>
+                </a>
+                <form id="users-form" action="{{ route ('users.destroy',$user) }} " method="post" >
+                    @csrf()
+                    @method("DELETE")
+                </form>
+            </div>
         </td>
       </tr>
 
     @empty
-      <div class="alert alert-danger">
-        <span>Nenhum Usuário cadastrado</span>
-      </div>
+        <div class="card-panel">
+            <span class="red-text text-darken-4">Nenhum Usuário cadastrado!</span>
+        </div>
     @endforelse
     </tbody>
     <tfoot>
@@ -71,4 +88,28 @@
       </tr>
     <tfoot>
   </table>
+  @section("footerScripts")
+    @parent
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".modal").modal();
+        });
+        function showModal(user){
+            $(document).ready(function(){
+                $.ajax({
+                    type:"get",
+                    url:"http://library.com.br/users/"+user.id,
+                    success:function(result){
+                        $(".modal-content").html(result);
+                    }
+                });
+
+            });
+        }
+      function submitMethodDelete(){
+        event.preventDefault();
+        document.getElementById("users-form").submit();
+      }
+    </script>
+  @endsection
 @stop

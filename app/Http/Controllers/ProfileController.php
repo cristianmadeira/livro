@@ -95,7 +95,7 @@ class ProfileController extends Controller
         $error=false;
         $message="O Perifl atualizado com sucesso!!!";
 
-      return redirect()->action("LoginController@logout")->with("request",Auth::user());
+      return redirect("profiles");
     }
 
     /**
